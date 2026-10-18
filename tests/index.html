@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CaptAIn — Unit Tests</title>
+  <style>
+    body { font: 14px/1.5 system-ui, sans-serif; margin: 24px; background: #fafafa; }
+    ul { list-style: none; padding: 0; }
+  </style>
+</head>
+<body>
+  <h1>Game logic tests</h1>
+
+  <!-- Domain and application only, plus the DOM-free art adapters. No drawing, input,
+       UI, image loading or map files. -->
+  <script src="../js/domain/namespace.js"></script>
+  <script src="../js/domain/iso.js"></script>
+  <script src="../js/domain/terrain.js"></script>
+  <script src="../js/domain/collision.js"></script>
+  <script src="../js/domain/object-types.js"></script>
+  <script src="../js/domain/game-map.js"></script>
+  <script src="../js/domain/map-checks.js"></script>
+  <script src="../js/domain/map-parser.js"></script>
+  <script src="../js/domain/map-serializer.js"></script>
+  <script src="../js/domain/route.js"></script>
+  <script src="../js/domain/incident-kinds.js"></script>
+  <script src="../js/domain/jobs.js"></script>
+  <script src="../js/domain/level-checks.js"></script>
+  <script src="../js/application/camera.js"></script>
+  <script src="../js/application/screens.js"></script>
+  <script src="../js/application/attract.js"></script>
+  <script src="../js/application/rain.js"></script>
+  <script src="../js/application/game-session.js"></script>
+  <script src="../js/application/edit-history.js"></script>
+  <script src="../js/application/palette.js"></script>
+  <script src="../js/application/editor-session.js"></script>
+  <script src="../js/application/crew.js"></script>
+  <script src="../js/application/round.js"></script>
+  <script src="../js/application/level-run.js"></script>
+  <script src="../js/application/hints.js"></script>
+  <script src="../js/adapters/art/object-art.js"></script>
+  <script src="../js/adapters/art/job-art.js"></script>
+  <script src="../js/adapters/art/terrain-art.js"></script>
+  <script src="../js/infrastructure/map-file.js"></script>
+  <script src="harness.js"></script>
+
+  <script src="domain/iso.test.js"></script>
+  <script src="domain/map-parser.test.js"></script>
+  <script src="adapters/terrain-art.test.js"></script>
+  <script src="domain/game-map.test.js"></script>
+  <script src="domain/map-checks.test.js"></script>
+  <script src="domain/map-serializer.test.js"></script>
+  <script src="domain/route.test.js"></script>
+  <script src="domain/level-checks.test.js"></script>
+  <script src="domain/incident-kinds.test.js"></script>
+  <script src="domain/jobs.test.js"></script>
+  <script src="application/camera.test.js"></script>
+  <script src="application/screens.test.js"></script>
+  <script src="application/attract.test.js"></script>
+  <script src="application/rain.test.js"></script>
+  <script src="application/game-session.test.js"></script>
+  <script src="application/edit-history.test.js"></script>
+  <script src="application/palette.test.js"></script>
+  <script src="application/editor-session.test.js"></script>
+  <script src="application/crew.test.js"></script>
+  <script src="application/round.test.js"></script>
+  <script src="application/hints.test.js"></script>
+  <script src="application/level-run.test.js"></script>
+  <script src="infrastructure/map-file.test.js"></script>
+  <script src="adapters/object-art.test.js"></script>
+  <script src="adapters/job-art.test.js"></script>
+  <script src="architecture.test.js"></script>
+</body>
+</html>

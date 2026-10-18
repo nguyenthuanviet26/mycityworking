@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CaptAIn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/editor.css">
+  <link rel="stylesheet" href="css/hud.css">
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="hud" hidden></div>
+  <div id="overlay">
+    <div class="overlay-box">
+      <div id="overlay-text">Loading…</div>
+      <div class="progress"><div id="progress-bar"></div></div>
+    </div>
+  </div>
+  <div id="devpanel" hidden></div>
+
+  <div id="menu-layer" hidden>/
+    <section id="screen-menu" class="menu-card" hidden>
+      <h1 class="title">Capt<span class="ai">AI</span>n</h1>
+      <p class="tagline">Keep the city running through the rainy season</p>
+      <div class="menu-buttons">
+        <button type="button" id="btn-play" class="menu-btn">Play</button>
+        <button type="button" id="btn-howto" class="menu-btn">How to Play</button>
+        <button type="button" id="btn-credits" class="menu-btn">Credits</button>
+      </div>
+    </section>
+
+    <section id="screen-howto" class="menu-card" hidden>
+      <h2>How to Play</h2>
+      <p>Storms are damaging the city. Click an incident, pick the right crew and send it along
+        the roads to fix it before things get worse. Unrepaired incidents turn urgent and wear
+        down the city's condition. Repair 10 incidents before the storm ends.</p>
+      <table class="controls">
+        <tr><th>Control</th><th>Action</th></tr>
+        <tr><td>Drag with the mouse</td><td>Move around the city</td></tr>
+        <tr><td>Mouse wheel</td><td>Zoom in and out</td></tr>
+        <tr><td>Arrow keys / W A S D</td><td>Scroll the map</td></tr>
+        <tr><td>+ / −</td><td>Zoom</td></tr>
+        <tr><td>Home</td><td>Reset the view</td></tr>
+        <tr><td>Click an incident</td><td>Open it</td></tr>
+        <tr><td>1 – 4</td><td>Pick a crew (or arm it when no incident is open)</td></tr>
+        <tr><td>Click a crew, then an incident</td><td>Send that crew</td></tr>
+        <tr><td>Enter</td><td>Send the picked crew</td></tr>
+        <tr><td>Tab</td><td>Next incident</td></tr>
+        <tr><td>C</td><td>Find the crew</td></tr>
+        <tr><td>Esc</td><td>Pause</td></tr>
+      </table>
+      <h3>Your crews</h3>
+      <p class="small">Each crew is Best at one kind of damage. A crew that can only help takes
+        twice as long and gets no Right-crew bonus.</p>
+      <div id="crew-guide"></div>
+      <div class="menu-buttons">
+        <button type="button" id="btn-howto-back" class="menu-btn">Back</button>
+      </div>
+    </section>
+
+    <section id="screen-credits" class="menu-card" hidden>
+      <h2>Credits</h2>
+      <p class="team">Team CaptAIn</p>
+      <p class="members">Thuan Viet · Phuong Nghi · Thy Phuong · Dieu Le</p>
+      <p>Made for Hackathon HK1 2026–27</p>
+      <p class="small">Art: "Isometric City" asset pack</p>
+      <div class="menu-buttons">
+        <button type="button" id="btn-credits-back" class="menu-btn">Back</button>
+      </div>
+    </section>
+
+    <section id="screen-pause" class="menu-card" hidden>
+      <h2>Paused</h2>
+      <div class="menu-buttons">
+        <button type="button" id="btn-resume" class="menu-btn">Resume</button>
+        <button type="button" id="btn-pause-howto" class="menu-btn">How to Play</button>
+        <button type="button" id="btn-to-menu" class="menu-btn">Main Menu</button>
+      </div>
+    </section>
+
+    <section id="screen-result" class="menu-card" hidden>
+      <h2 id="result-title"></h2>
+      <p id="result-reason" class="result-reason"></p>
+      <div id="result-stars" class="result-stars"></div>
+      <table id="result-stats" class="result-stats"></table>
+      <div class="menu-buttons">
+        <button type="button" id="btn-retry" class="menu-btn">Retry</button>
+        <button type="button" id="btn-result-menu" class="menu-btn">Main menu</button>
+      </div>
+    </section>
+  </div>
+  <button type="button" id="btn-pause" class="pause-btn" aria-label="Pause" hidden>&#10074;&#10074;</button>
+
+  <!-- Classic scripts (no modules) so the game also runs from file://.
+       Loaded inside-out by layer (Constitution VII): domain, application, adapters,
+       infrastructure, map content, then the composition root. -->
+  <script src="js/domain/namespace.js"></script>
+  <script src="js/domain/iso.js"></script>
+  <script src="js/domain/terrain.js"></script>
+  <script src="js/domain/collision.js"></script>
+  <script src="js/domain/object-types.js"></script>
+  <script src="js/domain/game-map.js"></script>
+  <script src="js/domain/map-checks.js"></script>
+  <script src="js/domain/map-parser.js"></script>
+  <script src="js/domain/map-serializer.js"></script>
+  <script src="js/domain/route.js"></script>
+  <script src="js/domain/incident-kinds.js"></script>
+  <script src="js/domain/jobs.js"></script>
+  <script src="js/domain/level-checks.js"></script>
+
+  <script src="js/application/camera.js"></script>
+  <script src="js/application/screens.js"></script>
+  <script src="js/application/attract.js"></script>
+  <script src="js/application/rain.js"></script>
+  <script src="js/application/game-session.js"></script>
+  <script src="js/application/edit-history.js"></script>
+  <script src="js/application/palette.js"></script>
+  <script src="js/application/editor-session.js"></script>
+  <script src="js/application/crew.js"></script>
+  <script src="js/application/round.js"></script>
+  <script src="js/application/level-run.js"></script>
+  <script src="js/application/hints.js"></script>
+
+  <script src="js/adapters/art/object-art.js"></script>
+  <script src="js/adapters/art/job-art.js"></script>
+  <script src="js/adapters/art/terrain-art.js"></script>
+  <script src="js/adapters/render/renderer.js"></script>
+  <script src="js/adapters/render/debug-overlay.js"></script>
+  <script src="js/adapters/render/rain-layer.js"></script>
+  <script src="js/adapters/render/level-layer.js"></script>
+  <script src="js/adapters/input/input.js"></script>
+  <script src="js/adapters/ui/menu.js"></script>
+  <script src="js/adapters/ui/hud.js"></script>
+  <script src="js/adapters/ui/crew-guide.js"></script>
+  <script src="js/adapters/render/editor-overlay.js"></script>
+  <script src="js/adapters/ui/editor-ui.js"></script>
+
+  <script src="js/infrastructure/assets.js"></script>
+  <script src="js/infrastructure/map-registry.js"></script>
+  <script src="js/infrastructure/level-registry.js"></script>
+  <script src="js/infrastructure/map-file.js"></script>
+  <script src="js/infrastructure/work-store.js"></script>
+  <script src="js/infrastructure/file-io.js"></script>
+
+  <script src="maps/sample-city.js"></script>
+  <script src="maps/tiny.js"></script>
+  <script src="maps/big.js"></script>
+  <script src="maps/trial.js"></script>
+
+  <script src="levels/trial.js"></script>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

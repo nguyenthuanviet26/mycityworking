@@ -1,0 +1,71 @@
+70 passed, 0 failed
+✔ iso › mapToWorld of unit steps
+✔ iso › worldToMap is the exact inverse
+✔ iso › tileOf floors positions
+✔ iso › tileCenter
+✔ iso › DIRS and depthKey
+✔ map-parser › parses a small grid
+✔ map-parser › ignores leading and trailing blank lines
+✔ map-parser › pads ragged rows with grass and warns
+✔ map-parser › unknown characters become grass, flagged, with a warning
+✔ map-parser › custom legend overrides the default
+✔ map-parser › unknown object type is skipped with a warning
+✔ map-parser › 2x2 object partly off the map is skipped
+✔ map-parser › overlapping objects: second one skipped
+✔ map-parser › object on water warns
+✔ map-parser › bridge not between roads warns
+✔ map-parser › generates ids and keeps given ids
+✔ map-parser › missing terrain throws
+✔ autotile › every road mask maps to the research R5 piece
+✔ autotile › damaged variant swaps the suffix
+✔ autotile › roadMask reads neighbours on the map
+✔ autotile › bridge orientation follows the road
+✔ autotile › shoreline: one water side
+✔ autotile › shoreline: two adjacent sides
+✔ autotile › shoreline: diagonal only gives a corner
+✔ autotile › shoreline: opposite sides give plain ground; dirt uses dirt art
+✔ autotile › collectImagePaths includes both road variants and object art
+✔ game-map › base › getTile out of bounds is null
+✔ game-map › base › 2x2 object covers its footprint
+✔ game-map › base › overlapping placeObject returns false
+✔ game-map › variants › setTileVariant emits tilechange and changes art
+✔ game-map › variants › setObjectVariant only when damaged art exists
+✔ game-map › collision › terrain defaults
+✔ game-map › collision › 2x2 building blocks all four tiles
+✔ game-map › collision › a prop on a road stays passable
+✔ game-map › collision › out of map is blocked
+✔ game-map › collision › isPassable by mode
+✔ game-map › collision › neighbors on a T-junction
+✔ game-map › collision › overrides apply, emit and clear
+✔ game-map › collision › accessTile: declared or nearest road on the front sides
+✔ camera › bounds of a 10x10 map
+✔ camera › panning stops at every edge
+✔ camera › zoom is clamped
+✔ camera › zoomAt keeps the point under the cursor
+✔ camera › small map is centred and cannot scroll
+✔ camera › keyboard scroll speed is constant on screen
+✔ camera › centerOn puts a map point at the view centre
+✔ camera › smooth centerOn glides and finishes
+✔ camera › tileAtScreen › tile centres resolve at several zooms and offsets
+✔ camera › tileAtScreen › points just inside each diamond corner resolve to the tile
+✔ camera › tileAtScreen › outside the map returns null
+✔ screens › starts loading, then shows the menu with Play focused
+✔ screens › How to Play from the menu returns to the menu
+✔ screens › How to Play from pause returns to pause
+✔ screens › Credits and back
+✔ screens › pause, resume, back and to menu
+✔ screens › invalid actions are ignored
+✔ screens › escape mapping
+✔ screens › busy blocks every action
+✔ screens › emits change events
+✔ screens › input is enabled only while playing
+✔ attract › stays inside the middle of the map
+✔ attract › loops every 90 seconds
+✔ attract › drifts slowly
+✔ attract › uses zoom 0.75
+✔ rain › creates a fixed pool
+✔ rain › is deterministic with a seed
+✔ rain › streaks fall by speed x dt or respawn at the top
+✔ rain › stays on screen over time with a constant count
+✔ rain › speeds and lengths are in range
+✔ rain › resize keeps streaks on screen

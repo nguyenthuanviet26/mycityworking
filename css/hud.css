@@ -1,0 +1,298 @@
+/* Trial level HUD: top bar, banners, incident panel, hint bubble, result card (feature 005, adapters). */
+:root {
+  --hud-bg: rgba(18, 24, 32, 0.82);
+  --hud-text: #f2f4f7;
+  --hud-accent: #4fc3f7;
+  --hud-new: #f5c518;
+  --hud-urgent: #e5484d;
+  --hud-ok: #2ecc71;
+  --hud-amber: #f0a020;
+}
+
+#hud[hidden] { display: none; }
+
+#hud {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  color: var(--hud-text);
+  font: 15px/1.3 system-ui, sans-serif;
+}
+
+/* ---- top bar ------------------------------------------------------------ */
+
+.hud-bar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 68px; /* leaves room for the pause button */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--hud-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.hud-cell { position: relative; white-space: nowrap; }
+.hud-phase-name { font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--hud-accent); }
+.hud-timer { font-variant-numeric: tabular-nums; font-weight: 700; }
+.hud-goal { white-space: normal; flex: 1 1 260px; }
+.hud-count { font-weight: 800; margin-left: 6px; }
+.hud-score-value { font-weight: 800; font-variant-numeric: tabular-nums; }
+
+.hud-meter { display: flex; align-items: center; gap: 8px; }
+.hud-meter-label { font-size: 13px; opacity: 0.85; }
+.hud-meter-bar {
+  position: relative;
+  width: 140px;
+  height: 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+.hud-meter-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  background: var(--hud-ok);
+  transition: width 200ms linear, background 300ms;
+}
+.hud-meter.low .hud-meter-fill { background: var(--hud-amber); }
+.hud-meter.critical .hud-meter-fill { background: var(--hud-urgent); }
+.hud-meter.critical .hud-meter-pct { color: var(--hud-urgent); }
+.hud-meter-pct { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 3.2em; }
+
+.hud-score-pop,
+.hud-meter-pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px); /* just below the bar, so long pops don't cover the meter */
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  font-weight: 800;
+  color: var(--hud-ok);
+  opacity: 0;
+  pointer-events: none;
+}
+.hud-score-pop.show,
+.hud-meter-pop.show { animation: hud-pop 1s ease-out; }
+
+@keyframes hud-pop {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(18px); }
+}
+
+/* ---- banner --------------------------------------------------------------- */
+
+.hud-banner {
+  position: absolute;
+  top: 26%;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90vw;
+  padding: 12px 28px;
+  border-radius: 12px;
+  background: var(--hud-bg);
+  font-size: 26px;
+  font-weight: 800;
+  text-align: center;
+  animation: hud-banner 2.2s ease-out;
+}
+
+@keyframes hud-banner {
+  0% { opacity: 0; transform: translate(-50%, -10px); }
+  12% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---- incident panel --------------------------------------------------------- */
+
+.hud-panel {
+  position: absolute;
+  left: 50%;
+  bottom: 104px; /* above the crew bar */
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  width: min(460px, 94vw);
+  padding: 14px 16px;
+  border-radius: 12px;
+  border-top: 4px solid var(--hud-new);
+  background: rgba(18, 22, 30, 0.92);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+.hud-panel.urgent { border-top-color: var(--hud-urgent); }
+.hud-panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.hud-panel-title { font-size: 18px; font-weight: 800; }
+.hud-panel-tag { font-weight: 800; color: var(--hud-urgent); letter-spacing: 0.05em; }
+.hud-panel-buttons { display: flex; gap: 8px; }
+
+.hud-btn {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #2b3445;
+  color: var(--hud-text);
+  font: 600 16px system-ui, sans-serif;
+  cursor: pointer;
+}
+.hud-btn:hover:not(:disabled) { background: #3a465c; }
+.hud-btn:focus-visible { outline: 3px solid #ffd54f; outline-offset: 2px; }
+.hud-btn:disabled { opacity: 0.6; cursor: default; }
+.hud-send { flex: 1; background: #1f7a4d; }
+.hud-send:hover:not(:disabled) { background: #25915b; }
+.hud-send:disabled { background: #2b3445; }
+
+/* ---- hint bubble ------------------------------------------------------------ */
+
+.hud-hint {
+  --arrow-x: 50%;
+  position: absolute;
+  max-width: 280px;
+  padding: 10px 14px 8px;
+  border-radius: 10px;
+  background: #fdf6d8;
+  color: #1b1f24;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+}
+.hud-hint::after {
+  content: "";
+  position: absolute;
+  left: var(--arrow-x);
+  bottom: -8px;
+  margin-left: -8px;
+  border: 8px solid transparent;
+  border-bottom: 0;
+  border-top-color: #fdf6d8;
+}
+.hud-hint.below::after {
+  top: -8px;
+  bottom: auto;
+  border: 8px solid transparent;
+  border-top: 0;
+  border-bottom-color: #fdf6d8;
+}
+.hud-hint-text { margin: 0 0 6px; font-weight: 600; }
+.hud-hint-skip {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #3a5a8c;
+  font: 13px system-ui, sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---- result card (inside #menu-layer) --------------------------------------- */
+
+.result-stars { margin: 4px 0 12px; font-size: 40px; letter-spacing: 6px; color: var(--hud-new); }
+.result-stats { width: 100%; margin: 0 0 20px; border-collapse: collapse; font-size: 16px; }
+.result-stats td { padding: 6px 4px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); text-align: left; }
+.result-stats td + td { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.result-reason { opacity: 0.85; }
+
+/* ---- crew bar (feature 006) ---- */
+
+.hud-crews {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+}
+.hud-crews-hint {
+  flex-basis: 100%;
+  font-weight: 700;
+  color: var(--hud-accent);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+.hud-crew-cards { display: flex; flex-wrap: wrap; gap: 8px; }
+.hud-crew {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 6px 6px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: var(--hud-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+}
+.hud-crew:hover { background: rgba(40, 50, 66, 0.9); }
+.hud-crew.armed { border-color: var(--hud-accent); box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.35); }
+.hud-crew.busy { opacity: 0.75; }
+.hud-crew-face {
+  width: 24px;
+  height: 32px;
+  image-rendering: pixelated;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.hud-crew-text { display: flex; flex-direction: column; line-height: 1.25; }
+.hud-crew-name { font-weight: 700; font-size: 14px; white-space: nowrap; }
+.hud-crew-status { font-size: 12px; opacity: 0.85; }
+.hud-crew-find {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: #2b3445;
+  color: var(--hud-text);
+  font-size: 16px;
+  cursor: pointer;
+}
+.hud-crew-find:hover { background: #3a465c; }
+.hud-guide { pointer-events: auto; width: 40px; min-height: 40px; padding: 0; font-weight: 800; }
+
+/* crew list inside the incident panel */
+.hud-panel-best { margin: 6px 0 0; color: var(--hud-amber); font-weight: 700; }
+.hud-rows { display: flex; flex-direction: column; gap: 4px; margin: 10px 0 12px; }
+.hud-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  padding: 6px 8px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+.hud-row:hover { background: rgba(255, 255, 255, 0.1); }
+.hud-row.picked { border-color: var(--hud-accent); background: rgba(79, 195, 247, 0.12); }
+.hud-row.unavailable .hud-row-name { opacity: 0.6; }
+.hud-row-name { font-weight: 600; }
+.hud-row-status { grid-column: 1 / -1; font-size: 13px; opacity: 0.85; }
+.hud-row-status:empty { display: none; }
+.hud-badge { align-self: center; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.03em; }
+.hud-badge.best { background: var(--hud-ok); color: #0d1f14; }
+.hud-badge.help { background: var(--hud-amber); color: #2a1a00; }
+.hud-badge.none { background: rgba(255, 255, 255, 0.15); color: var(--hud-text); }
+
+.hud-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 110px;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(229, 72, 77, 0.92);
+  font-weight: 700;
+}
+
+/* crew guide inside How to Play */
+.menu-card h3 { margin: 20px 0 8px; font-size: 20px; }
+.crew-guide { width: 100%; margin: 0 0 16px; border-collapse: collapse; font-size: 13px; text-align: left; }
+.crew-guide th, .crew-guide td { padding: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); vertical-align: top; }
+.crew-guide th { opacity: 0.8; font-weight: 600; }

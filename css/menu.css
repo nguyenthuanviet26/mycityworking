@@ -1,0 +1,171 @@
+[hidden] {
+  display: none !important;
+}
+
+#menu-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 22, 0.55);
+  opacity: 1;
+  transition: opacity 300ms;
+}
+
+#menu-layer.dim-light {
+  background: rgba(10, 14, 22, 0.45);
+}
+
+#menu-layer.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#overlay {
+  z-index: 20;
+}
+
+#devpanel {
+  z-index: 5;
+}
+
+.menu-card {
+  box-sizing: border-box;
+  width: min(520px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px 40px;
+  border-radius: 12px;
+  background: rgba(18, 22, 30, 0.88);
+  color: #f2f4f8;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.menu-card h2 {
+  margin: 0 0 16px;
+  font-size: 28px;
+}
+
+.menu-card p {
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.title {
+  margin: 0;
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.title .ai {
+  color: #6cb4ee;
+}
+
+.tagline {
+  margin: 8px 0 28px;
+  font-size: 16px;
+  color: #c9d1dc;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.menu-btn {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: #2b3445;
+  color: #f2f4f8;
+  font: 600 18px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.menu-btn:hover {
+  background: #3a465c;
+}
+
+.menu-btn:focus-visible,
+.pause-btn:focus-visible {
+  outline: 3px solid #ffd54f;
+  outline-offset: 2px;
+}
+
+.controls {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 15px;
+}
+
+.controls th,
+.controls td {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.controls th {
+  color: #c9d1dc;
+  font-weight: 600;
+}
+
+.controls td:first-child {
+  color: #ffd54f;
+  white-space: nowrap;
+}
+
+.team {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.members {
+  font-size: 18px;
+}
+
+.small {
+  font-size: 14px;
+  color: #c9d1dc;
+}
+
+.pause-btn {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 8;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #2b3445;
+  color: #f2f4f8;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pause-btn:hover {
+  background: #3a465c;
+}
+
+@media (max-height: 640px) {
+  .title {
+    font-size: 44px;
+  }
+
+  .tagline {
+    margin-bottom: 16px;
+  }
+
+  .menu-card {
+    padding: 20px 28px;
+  }
+}
