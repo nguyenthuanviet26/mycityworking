@@ -5,6 +5,8 @@
   var FADE_MS = 300;
   var SCREENS = {
     menu: "screen-menu",
+    "briefing-crews": "screen-briefing-crews",
+    "briefing-problems": "screen-briefing-problems",
     howto: "screen-howto",
     credits: "screen-credits",
     paused: "screen-pause",
@@ -25,6 +27,11 @@
 
     m.on("change", function (e) { self._onChange(e); });
 
+    this.bind("btn-briefing-next", function () { m.nextBriefing(); });
+    this.bind("btn-briefing-back", function () { m.back(); });
+    this.bind("btn-briefing-menu", function () { m.toMenu(); });
+    this.bind("btn-problems-menu", function () { m.toMenu(); });
+    this.bind("btn-start-round", function () { m.startRound(); });
     this.bind("btn-play", function () { m.play(); });
     this.bind("btn-howto", function () { m.openHowto(); });
     this.bind("btn-credits", function () { m.openCredits(); });
@@ -34,6 +41,7 @@
     this.bind("btn-resume", function () { m.resume(); });
     this.bind("btn-pause-howto", function () { m.openHowto(); });
     this.bind("btn-to-menu", function () { m.toMenu(); });
+    this.bind("btn-pause-retry", function () { m.retry(); });
     this.bind("btn-retry", function () { m.retry(); });
     this.bind("btn-result-menu", function () { m.toMenu(); });
 
@@ -76,11 +84,12 @@
   };
 
   P._onKey = function (e) {
+    if (this.game.run && this.game.run.referenceSection) return;
     if (e.key === "Escape") {
       if (this.machine.escape()) e.preventDefault();
       return;
     }
-    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && this._visibleScreen()) {
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && this._visibleScreen() && this.machine.state.indexOf("briefing-") !== 0) {
       e.preventDefault();
       this._moveFocus(e.key === "ArrowDown" ? 1 : -1);
     }
@@ -123,6 +132,7 @@
     this.layer.hidden = !SCREENS[state];
     this.layer.classList.toggle("dim-light", state === "paused" || (state === "howto" && m.returnTo === "paused"));
     this.pauseBtn.hidden = state !== "playing";
+    $("btn-pause-retry").hidden = !m.hasLevel;
 
     if (SCREENS[state]) {
       var target = (m.focusOnShow && $(m.focusOnShow)) || $(SCREENS[state]).querySelector(".menu-btn");

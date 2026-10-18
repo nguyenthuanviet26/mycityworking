@@ -3,14 +3,25 @@
   "use strict";
 
   // state -> action -> handler returning the next state
+  function prepare(m) { m.focusOnShow = "btn-briefing-next"; return "briefing-crews"; }
+
   var TABLE = {
     loading: {
       loaded: function (m) { m.focusOnShow = "btn-play"; return "menu"; }
     },
     menu: {
-      play: function (m) { m.focusOnShow = null; return "playing"; },
+      play: function (m) { if (m.hasLevel) return prepare(m); m.focusOnShow = null; return "playing"; },
       openHowto: function (m) { m.returnTo = "menu"; m.focusOnShow = "btn-howto-back"; return "howto"; },
       openCredits: function (m) { m.focusOnShow = "btn-credits-back"; return "credits"; }
+    },
+    "briefing-crews": {
+      nextBriefing: function (m) { m.focusOnShow = "btn-start-round"; return "briefing-problems"; },
+      toMenu: function (m) { m.focusOnShow = "btn-play"; return "menu"; }
+    },
+    "briefing-problems": {
+      back: prepare,
+      startRound: function (m) { m.focusOnShow = null; return "playing"; },
+      toMenu: function (m) { m.focusOnShow = "btn-play"; return "menu"; }
     },
     howto: {
       back: function (m) {
@@ -28,10 +39,11 @@
       finish: function (m) { m.focusOnShow = "btn-retry"; return "result"; }
     },
     result: {
-      retry: function (m) { m.focusOnShow = null; return "playing"; },
+      retry: function (m) { if (m.hasLevel) return prepare(m); m.focusOnShow = null; return "playing"; },
       toMenu: function (m) { m.focusOnShow = "btn-play"; return "menu"; }
     },
     paused: {
+      retry: prepare,
       resume: function (m) { m.focusOnShow = null; return "playing"; },
       back: function (m) { m.focusOnShow = null; return "playing"; },
       openHowto: function (m) { m.returnTo = "paused"; m.focusOnShow = "btn-howto-back"; return "howto"; },
@@ -39,9 +51,10 @@
     }
   };
 
-  var ESCAPE = { howto: "back", credits: "back", paused: "back", playing: "pause" };
+  var ESCAPE = { "briefing-crews": "toMenu", "briefing-problems": "back", howto: "back", credits: "back", paused: "back", playing: "pause" };
 
-  function ScreenMachine() {
+  function ScreenMachine(opts) {
+    this.hasLevel = !!(opts && opts.hasLevel);
     this.state = "loading";
     this.returnTo = null;
     this.focusOnShow = null;
@@ -55,7 +68,7 @@
   P.off = function (evt, fn) { this._events.off(evt, fn); };
 
   P.dispatch = function (action) {
-    if (this.busy) return false;
+    if (this.busy || (action === "retry" && this.state === "paused" && !this.hasLevel)) return false;
     var handler = TABLE[this.state] && TABLE[this.state][action];
     if (!handler) return false;
     var from = this.state;
@@ -73,7 +86,7 @@
     return this.state === "playing";
   };
 
-  ["loaded", "play", "openHowto", "openCredits", "back", "pause", "resume", "toMenu", "finish", "retry"].forEach(function (a) {
+  ["nextBriefing", "startRound", "loaded", "play", "openHowto", "openCredits", "back", "pause", "resume", "toMenu", "finish", "retry"].forEach(function (a) {
     P[a] = function () { return this.dispatch(a); };
   });
 

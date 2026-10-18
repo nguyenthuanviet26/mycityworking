@@ -1,7 +1,7 @@
 // Composition root: reads URL settings, loads the map and its images, creates every part and
 // wires them together, then runs the frame loop. No game rules or flow decisions live here.
 // URL settings: ?map=id &menu=0 &zoom=0.5 &center=10,12 &dev=1
-// With no ?map, Play starts the trial level (feature 005); any other map opens in free look.
+// With no ?map, Play prepares the trial level (features 005/008); other maps open in free look.
 // Decorate mode (feature 004): ?edit=1 [&map=id | &work=id]
 (function (MCW) {
   "use strict";
@@ -106,7 +106,7 @@
     var game = createView(map, terrainArt);
     var camera = game.camera, redraw = game.redraw;
     game.rain = new MCW.RainLayer(game);
-    game.screens = new MCW.ScreenMachine();
+    game.screens = new MCW.ScreenMachine({ hasLevel: !!level });
     game.menuOpen = function () { return game.screens.state !== "playing"; };
     game.menu = new MCW.MenuUI(game, document.getElementById("menu-layer"));
 
@@ -127,6 +127,8 @@
       game.run = new MCW.LevelRun({ screens: game.screens, map: map, level: level });
       var layer = new MCW.LevelLayer(game, game.run);
       game.hud = new MCW.HUD(game, game.run, document.getElementById("hud"), { imageSrc: imageSrc });
+      game.run.on("reference", function (section) { game.input.setReferenceBlocked(!!section); });
+      game.briefingUI = new MCW.RoundBriefingUI(game, game.run, { imageSrc: imageSrc });
       game.rain.levelRun = game.run;
       game.run.on("end", function (r) { game.menu.setResult(r); });
       new MCW.CrewGuide(document.getElementById("crew-guide"));

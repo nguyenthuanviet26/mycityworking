@@ -52,7 +52,11 @@
 
   P._onScreenChange = function (e) {
     var cam = this.camera;
-    if ((e.from === "menu" || e.from === "result") && e.to === "playing") {
+    if (e.to === "briefing-crews" && e.from !== "briefing-problems") {
+      this.saved = null;
+      this.selection.set({ hovered: null, selected: null });
+    }
+    if ((e.from === "menu" || e.from === "result" || e.action === "startRound") && e.to === "playing") {
       this.applyStartView();
       this._events.emit("playstart");
     } else if (e.from === "playing" && e.to === "paused") {

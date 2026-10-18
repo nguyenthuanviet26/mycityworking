@@ -158,3 +158,10 @@ describe("screens", function () {
     assertEqual(m.state, "result");
   });
 });
+
+describe("briefing screen flow", function () {
+  function ready() {var m=new MCW.ScreenMachine({hasLevel:true});m.loaded();m.play();return m;}
+  it("prepares in two untimed steps and guards start",function(){var m=ready();assertEqual(m.state,"briefing-crews");assertEqual(m.inputEnabled(),false);assertEqual(m.startRound(),false);m.nextBriefing();assertEqual(m.state,"briefing-problems");m.back();assertEqual(m.state,"briefing-crews");m.nextBriefing();assertTrue(m.startRound());assertEqual(m.state,"playing");assertEqual(m.startRound(),false);});
+  it("routes both retries and Escape through preparation",function(){var m=ready();m.nextBriefing();m.escape();assertEqual(m.state,"briefing-crews");m.escape();assertEqual(m.state,"menu");m.play();m.nextBriefing();m.startRound();m.pause();m.retry();assertEqual(m.state,"briefing-crews");m.nextBriefing();m.startRound();m.finish();m.retry();assertEqual(m.state,"briefing-crews");});
+  it("keeps default free look and rejects paused retry without a level",function(){var m=new MCW.ScreenMachine();m.loaded();m.play();assertEqual(m.state,"playing");m.pause();assertEqual(m.retry(),false);});
+});

@@ -20,6 +20,7 @@
     '    <span class="hud-meter-pct"></span><span class="hud-meter-pop"></span>' +
     '  </div>' +
     '</div>' +
+    '<div class="hud-reference-buttons"><button type="button" class="hud-btn hud-stats" title="Crew stats (R)">Crew stats</button><button type="button" class="hud-btn hud-schedule" title="Problem schedule (O)">Problem schedule</button></div>' +
     '<div class="hud-banner" hidden></div>' +
     '<div class="hud-panel" hidden>' +
     '  <div class="hud-panel-head"><span class="hud-panel-title"></span><span class="hud-panel-tag"></span></div>' +
@@ -76,6 +77,8 @@
     this._toastTimer = null;
     var self = this, el = this.el;
 
+    q(".hud-stats").addEventListener("click", function () { run.openReference("crews"); });
+    q(".hud-schedule").addEventListener("click", function () { run.openReference("problems"); });
     el.send.addEventListener("click", function () { run.sendCrew(); });
     el.goto.addEventListener("click", function () { self._goTo(); });
     el.skip.addEventListener("click", function () { run.skipHints(); });
@@ -114,7 +117,13 @@
   };
 
   P._onKey = function (e) {
-    if (!this._playing() || e.ctrlKey || e.altKey || e.metaKey) return;
+    if (!this._playing() || this.run.referenceSection || e.ctrlKey || e.altKey || e.metaKey) return;
+    if (e.target.closest && e.target.closest("button") && (e.key === "Enter" || e.key === " " || e.key === "Tab")) return;
+    if (e.code === "KeyR" || e.code === "KeyO") {
+      e.preventDefault(); e.stopImmediatePropagation();
+      this.run.openReference(e.code === "KeyR" ? "crews" : "problems");
+      return;
+    }
     var run = this.run, n = /^Digit([1-9])$/.exec(e.code);
     if (e.key === "Escape" && (run.selected || run.armedCrew)) {
       run.select(null); // also disarms
@@ -123,7 +132,7 @@
       else if (!run.armIndex(+n[1])) this._toast("Busy repairing");
     } else if ((e.key === "Enter" || e.key === " ") && run.selected) {
       if (!this.el.send.disabled) run.sendCrew();
-    } else if (e.key === "Tab") {
+    } else if (e.key === "Tab" && !e.shiftKey && run.selected) {
       run.selectNext();
     } else if (e.code === "KeyC" && !(this.game.debug && this.game.debug.on)) {
       this._glideTo(this._focusCrew());

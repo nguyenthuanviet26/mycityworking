@@ -307,3 +307,22 @@ describe("level-run with crews (feature 006)", function () {
     assertTrue(s.run.options !== before, "refreshed");
   });
 });
+
+
+describe("preparation lifecycle", function () {
+  function setup() {
+    var map=MCW.parseMap({terrain:"rrrrr\nr...r\nrrrrr\n.....\n.....",objects:[{type:"clinic_a",at:[1,1],id:"clinic"}]}).map;
+    var level={id:"t",name:"Test",depot:[0,0],crew:{speed:3},target:1,
+      phases:[{name:"A",durationS:10,maxActive:3,rain:.4},{name:"B",durationS:10,maxActive:3,rain:.7},{name:"C",durationS:10,maxActive:3,rain:1}],
+      schedule:[{at:1,kind:"road",tile:[2,2],tutorial:true},{at:2,kind:"building",object:"clinic"}],drainPerUrgentPerS:2,refill:{normal:5,early:8},earlyBonus:50,stars:[100,200]};
+    var screens=new MCW.ScreenMachine({hasLevel:true}),run=new MCW.LevelRun({screens:screens,map:map,level:level});
+    screens.loaded();screens.play(); return {screens:screens,run:run,map:map,level:level};
+  }
+  function start(s){s.screens.nextBriefing();s.screens.startRound();}
+  it("has no Round or hints during preparation and navigation",function(){var s=setup();var b=s.run.briefing;assertTrue(b);assertEqual(s.run.round,null);assertEqual(s.run.hints,null);for(var i=0;i<600;i++)s.run.update(100);s.screens.nextBriefing();s.screens.back();assertTrue(s.run.briefing===b);assertEqual(s.map.getTile(2,2).variant,"normal");assertEqual(s.run.round,null);start(s);assertEqual(s.run.round.elapsed,0);var r=s.run.round;s.screens.pause();s.screens.resume();assertTrue(s.run.round===r);});
+  it("retries clean visuals and create a new briefing before a new Round",function(){var s=setup();start(s);s.run.update(2100);var old=s.run.round,brief=s.run.briefing;s.run.select("inc-0");s.screens.pause();s.screens.retry();assertEqual(s.run.round,null);assertEqual(s.run.selected,null);assertEqual(s.map.getTile(2,2).variant,"normal");assertEqual(s.map.getObject("clinic").variant,"normal");assertTrue(s.run.briefing!==brief);start(s);assertTrue(s.run.round!==old);assertEqual(s.run.round.elapsed,0);assertEqual(s.run.round.score,0);assertEqual(s.run.round.condition,100);s.run.round._end("cleared");s.screens.retry();assertEqual(s.screens.state,"briefing-crews");assertEqual(s.run.round,null);s.screens.toMenu();assertEqual(s.run.briefing,null);});
+  it("reference is guarded, preserves decisions, and never stops time",function(){var s=setup();assertEqual(s.run.openReference("crews"),false);start(s);assertEqual(s.run.openReference("invalid"),false);s.run.update(2100);s.run.select("inc-0");s.run.sendCrew();var round=s.run.round,crewId=round.incident("inc-0").crewId;var events=[];s.run.on("reference",function(v){events.push(v);});assertTrue(s.run.openReference("crews"));assertTrue(s.run.openReference("crews"));assertEqual(events,["crews"]);s.run.openReference("problems");assertEqual(s.screens.state,"playing");assertEqual(s.run.selected,"inc-0");assertEqual(round.incident("inc-0").crewId,crewId);var before=round.elapsed;s.run.update(1000);assertEqual(round.elapsed,before+1);assertTrue(s.run.round===round);s.run.closeReference();s.run.closeReference();assertEqual(events,["crews","problems",null]);});
+  it("reference open and closed produce identical ten-second simulation",function(){var a=setup(),b=setup();start(a);start(b);a.run.openReference("problems");for(var i=0;i<100;i++){a.run.update(100);b.run.update(100);}assertEqual(a.run.round.elapsed,b.run.round.elapsed);assertEqual(a.run.round.condition,b.run.round.condition);assertEqual(a.run.round.incidents.map(function(x){return [x.id,x.urgent,x.progress];}),b.run.round.incidents.map(function(x){return [x.id,x.urgent,x.progress];}));assertEqual(a.run.round.crews.map(function(c){return [c.x,c.y,c.state];}),b.run.round.crews.map(function(c){return [c.x,c.y,c.state];}));});
+  it("closes reference on pause, retry, result, and menu without resuming",function(){var s=setup();start(s);s.run.openReference("crews");var round=s.run.round;s.screens.pause();assertEqual(s.run.referenceSection,null);s.run.update(1000);assertEqual(round.elapsed,0);assertEqual(s.run.openReference("crews"),false);s.screens.resume();assertTrue(s.run.round===round);s.run.openReference("problems");round._end("cleared");assertEqual(s.run.referenceSection,null);assertEqual(s.screens.state,"result");assertEqual(s.run.openReference("crews"),false);s.screens.retry();assertEqual(s.run.round,null);start(s);s.run.openReference("crews");s.screens.pause();s.screens.toMenu();assertEqual(s.run.referenceSection,null);assertEqual(s.run.briefing,null);});
+
+});

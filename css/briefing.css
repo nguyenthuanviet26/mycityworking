@@ -1,0 +1,44 @@
+/* Preparation and running-reference views reuse the menu/HUD palette. */
+.briefing-card { width: min(1140px, 96%); max-height: 94%; padding: 24px; text-align: left; display: flex; flex-direction: column; overflow: hidden; }
+.briefing-card h2 { margin: 0 0 6px; }
+.briefing-label { color: #a9e7bf; font-weight: 700; font-size: 14px; margin: 0 0 16px; }
+.briefing-content { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 0 4px 12px; }
+.briefing-content:focus-visible { outline: 2px solid #ffd54f; outline-offset: -2px; }
+.briefing-roster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 410px), 1fr)); gap: 16px; }
+.briefing-crew { background: #222d3b; border: 1px solid #46566a; border-radius: 10px; padding: 16px; min-width: 0; }
+.briefing-crew-head { display: flex; align-items: center; gap: 10px; }
+.briefing-crew-head h3, .briefing-crew-head p { margin: 0 0 4px; }
+.briefing-portrait { width: 40px; height: 56px; object-fit: contain; image-rendering: pixelated; }
+.briefing-vehicle { width: 76px; height: 64px; object-fit: contain; margin-left: auto; image-rendering: pixelated; }
+.briefing-detail { font-size: 14px; color: #cad5e4; }
+.briefing-advantage { color: #ffd879; }
+.briefing-table { border-collapse: collapse; width: 100%; text-align: left; font-size: 14px; }
+.briefing-table caption { text-align: left; padding: 10px 0; font-weight: 700; }
+.briefing-table th, .briefing-table td { padding: 9px 7px; border-bottom: 1px solid #46566a; vertical-align: top; }
+.briefing-table th { color: #a9d6ef; }
+.briefing-match { font-weight: 700; }
+.match-best { color: #a4eac1; } .match-help { color: #ffe1a0; } .match-none { color: #c9d1dc; }
+.briefing-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; border-top: 1px solid #46566a; flex-shrink: 0; }
+.briefing-actions .menu-btn { width: auto; flex: 1 1 150px; font-size: 16px; margin: 0; }
+.briefing-primary { border-color: #ffd54f; }
+@media (max-width: 700px), (max-height: 500px) { .briefing-card { padding: 12px; } .briefing-actions { gap: 6px; padding-top: 8px; } .briefing-actions .menu-btn { padding: 8px; } }
+
+.briefing-summary { font-size: 19px; font-weight: 700; color: #ffe1a0; }
+.briefing-schedule { min-width: 680px; }
+.briefing-schedule td:nth-child(2) { min-width: 180px; }
+.briefing-schedule td:nth-child(5) { min-width: 160px; }
+
+.hud-reference-buttons { position: absolute; top: 98px; right: 14px; display: flex; gap: 8px; pointer-events: auto; }
+#round-reference-layer { position: fixed; left: 0; right: 0; bottom: 0; z-index: 7; display: flex; justify-content: center; align-items: stretch; background: rgba(10,14,22,.45); padding: 8px 12px 12px; box-sizing: border-box; }
+#round-reference { width: min(1120px, 100%); max-height: 100%; background: #151e2b; box-shadow: 0 12px 40px #0009; }
+.briefing-running { color: #ffd879; font-weight: 700; margin: 0 0 8px; }
+.reference-tabs { padding: 0 0 10px; border: 0; }
+.reference-tabs [aria-pressed="true"] { border-color: #ffd54f; color: #ffd879; }
+
+@media (max-height: 500px) { #round-reference { padding: 10px; } #round-reference h2 { font-size: 20px; margin-bottom: 4px; } .briefing-running { font-size: 12px; margin-bottom: 4px; } #round-reference .menu-btn { padding: 6px 8px; font-size: 14px; } .reference-tabs { padding-bottom: 6px; } }
+
+#round-reference.briefing-compact { padding: 10px; }
+#round-reference.briefing-compact h2 { font-size: 20px; margin-bottom: 4px; }
+#round-reference.briefing-compact .briefing-running { font-size: 12px; margin-bottom: 4px; }
+#round-reference.briefing-compact .menu-btn { padding: 6px 8px; font-size: 14px; }
+#round-reference.briefing-compact .reference-tabs { padding-bottom: 6px; }

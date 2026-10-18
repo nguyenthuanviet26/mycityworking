@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/menu.css">
   <link rel="stylesheet" href="css/editor.css">
   <link rel="stylesheet" href="css/hud.css">
+  <link rel="stylesheet" href="css/briefing.css">
 </head>
 <body>
   <canvas id="game"></canvas>
@@ -18,9 +19,24 @@
       <div class="progress"><div id="progress-bar"></div></div>
     </div>
   </div>
+  <div id="round-reference-layer" hidden>
+    <section id="round-reference" class="menu-card briefing-card" role="dialog" aria-modal="true" aria-labelledby="reference-title" aria-describedby="reference-timing">
+      <h2 id="reference-title">Round reference</h2>
+      <p id="reference-timing" class="briefing-running">Time running - the storm continues while you read.</p>
+      <div class="briefing-actions reference-tabs">
+        <button type="button" id="btn-reference-crews" class="menu-btn">Crew stats</button>
+        <button type="button" id="btn-reference-problems" class="menu-btn">Problem schedule</button>
+      </div>
+      <div id="reference-content" class="briefing-content" tabindex="0" aria-label="Round reference content"></div>
+      <div class="briefing-actions">
+        <button type="button" id="btn-reference-pause" class="menu-btn">Pause</button>
+        <button type="button" id="btn-reference-close" class="menu-btn briefing-primary">Close reference</button>
+      </div>
+    </section>
+  </div>
   <div id="devpanel" hidden></div>
 
-  <div id="menu-layer" hidden>/
+  <div id="menu-layer" hidden>
     <section id="screen-menu" class="menu-card" hidden>
       <h1 class="title">Capt<span class="ai">AI</span>n</h1>
       <p class="tagline">Keep the city running through the rainy season</p>
@@ -31,8 +47,30 @@
       </div>
     </section>
 
+    <section id="screen-briefing-crews" class="menu-card briefing-card" aria-labelledby="briefing-crews-title" hidden>
+      <h2 id="briefing-crews-title">Meet your crews</h2>
+      <p class="briefing-label">1 of 2 / Untimed preparation</p>
+      <div id="briefing-crews-content" class="briefing-content" tabindex="0" aria-label="Crew capabilities"></div>
+      <div class="briefing-actions">
+        <button type="button" id="btn-briefing-menu" class="menu-btn">Main menu</button>
+        <button type="button" id="btn-briefing-next" class="menu-btn briefing-primary">Continue to Problems</button>
+      </div>
+    </section>
+    <section id="screen-briefing-problems" class="menu-card briefing-card" aria-labelledby="briefing-problems-title" hidden>
+      <h2 id="briefing-problems-title">Plan for the storm</h2>
+      <p class="briefing-label">2 of 2 / Untimed preparation</p>
+      <div id="briefing-problems-content" class="briefing-content" tabindex="0" aria-label="All scheduled problems"></div>
+      <div class="briefing-actions">
+        <button type="button" id="btn-briefing-back" class="menu-btn">Back to crews</button>
+        <button type="button" id="btn-problems-menu" class="menu-btn">Main menu</button>
+        <button type="button" id="btn-start-round" class="menu-btn briefing-primary">Start Round</button>
+      </div>
+    </section>
+
     <section id="screen-howto" class="menu-card" hidden>
       <h2>How to Play</h2>
+      <p>Before a round, review your crews and their effective stats, then every planned problem. Preparation is untimed. Choose Start Round when ready; problems activate gradually on the schedule.</p>
+      <p>During play, open Crew stats (R) or Problem schedule (O) to consult the full reference. Time keeps running while you read. Choose Pause to stop time. Retry returns to the untimed briefing.</p>
       <p>Storms are damaging the city. Click an incident, pick the right crew and send it along
         the roads to fix it before things get worse. Unrepaired incidents turn urgent and wear
         down the city's condition. Repair 10 incidents before the storm ends.</p>
@@ -47,7 +85,8 @@
         <tr><td>1 – 4</td><td>Pick a crew (or arm it when no incident is open)</td></tr>
         <tr><td>Click a crew, then an incident</td><td>Send that crew</td></tr>
         <tr><td>Enter</td><td>Send the picked crew</td></tr>
-        <tr><td>Tab</td><td>Next incident</td></tr>
+        <tr><td>Tab</td><td>Next incident when one is selected; otherwise navigate controls</td></tr>
+        <tr><td>R / O</td><td>Open crew stats / problem schedule (time keeps running)</td></tr>
         <tr><td>C</td><td>Find the crew</td></tr>
         <tr><td>Esc</td><td>Pause</td></tr>
       </table>
@@ -75,6 +114,7 @@
       <h2>Paused</h2>
       <div class="menu-buttons">
         <button type="button" id="btn-resume" class="menu-btn">Resume</button>
+        <button type="button" id="btn-pause-retry" class="menu-btn" hidden>Retry round</button>
         <button type="button" id="btn-pause-howto" class="menu-btn">How to Play</button>
         <button type="button" id="btn-to-menu" class="menu-btn">Main Menu</button>
       </div>
@@ -120,6 +160,7 @@
   <script src="js/application/editor-session.js"></script>
   <script src="js/application/crew.js"></script>
   <script src="js/application/round.js"></script>
+  <script src="js/application/round-briefing.js"></script>
   <script src="js/application/level-run.js"></script>
   <script src="js/application/hints.js"></script>
 
@@ -133,6 +174,7 @@
   <script src="js/adapters/input/input.js"></script>
   <script src="js/adapters/ui/menu.js"></script>
   <script src="js/adapters/ui/hud.js"></script>
+  <script src="js/adapters/ui/round-briefing.js"></script>
   <script src="js/adapters/ui/crew-guide.js"></script>
   <script src="js/adapters/render/editor-overlay.js"></script>
   <script src="js/adapters/ui/editor-ui.js"></script>

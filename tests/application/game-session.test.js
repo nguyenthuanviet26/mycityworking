@@ -159,3 +159,13 @@ describe("game-session", function () {
     assertEqual(s.sets[s.sets.length - 1], { hovered: null, selected: null });
   });
 });
+
+
+describe("prepared game-session",function(){
+  it("applies the start camera once at explicit start and restores pause view",function(){
+    var screens=new MCW.ScreenMachine({hasLevel:true}),camera=new MCW.Camera({viewW:800,viewH:600});camera.setMapSize(32,32);
+    var selection={get:function(){return {hovered:null,selected:null};},set:function(){}};
+    var session=new MCW.GameSession({screens:screens,camera:camera,cols:32,rows:32,startView:{zoom:.8,center:{x:10,y:12}},selection:selection});
+    var starts=0;session.on("playstart",function(){starts++;});screens.loaded();session.update(2000);screens.play();assertEqual(starts,0);screens.nextBriefing();screens.back();screens.nextBriefing();screens.startRound();assertEqual(starts,1);assertEqual(camera.zoom,.8);camera.panBy(20,10);var x=camera.wx; screens.pause();camera.panBy(80,90);screens.resume();assertEqual(camera.wx,x);assertEqual(starts,1);
+  });
+});

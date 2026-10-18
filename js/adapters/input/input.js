@@ -19,6 +19,7 @@
     this.selected = null;
     this.held = {};
     this.enabled = true;
+    this.referenceBlocked = false;
     this._drag = null;
     this._pointer = null;
     this._tool = null;
@@ -61,7 +62,7 @@
     var self = this, canvas = this.canvas;
 
     canvas.addEventListener("pointerdown", function (e) {
-      if (!self.enabled) return;
+      if (!self.enabled || self.referenceBlocked) return;
       if (self._tool && e.button === 0) {
         canvas.setPointerCapture(e.pointerId);
         self._toolPointer = e.pointerId;
@@ -83,7 +84,7 @@
 
     canvas.addEventListener("pointermove", function (e) {
       self._pointer = { x: e.clientX, y: e.clientY };
-      if (!self.enabled) return;
+      if (!self.enabled || self.referenceBlocked) return;
       if (self._toolPointer === e.pointerId) {
         var a = self._toolArgs(e);
         self._tool.move(a[0], a[1]);
@@ -133,14 +134,14 @@
 
     canvas.addEventListener("wheel", function (e) {
       e.preventDefault();
-      if (!self.enabled || !e.deltaY) return;
+      if (!self.enabled || self.referenceBlocked || !e.deltaY) return;
       self.game.camera.zoomAt(e.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP, e.clientX, e.clientY);
       self.game.renderer.requestRedraw();
       self._updateHover();
     }, { passive: false });
 
     window.addEventListener("keydown", function (e) {
-      if (!self.enabled || typing()) return;
+      if (!self.enabled || self.referenceBlocked || typing()) return;
       if (SCROLL_KEYS[e.code]) {
         self.held[e.code] = true;
         e.preventDefault();
@@ -172,6 +173,11 @@
 
   // Keyboard scrolling; returns true when the camera moved.
   // Drops held keys, any drag and the hover highlight (used when a menu opens).
+  P.setReferenceBlocked = function (blocked) {
+    this.referenceBlocked = blocked;
+    if (blocked) this.reset();
+  };
+
   P.reset = function () {
     this._cancelTool();
     this.held = {};
@@ -181,7 +187,7 @@
   };
 
   P.update = function (dtMs) {
-    if (!this.enabled) return false;
+    if (!this.enabled || this.referenceBlocked) return false;
     var dx = 0, dy = 0;
     for (var code in this.held) {
       dx += SCROLL_KEYS[code][0];

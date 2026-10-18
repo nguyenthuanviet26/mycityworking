@@ -4,7 +4,7 @@
   "use strict";
 
   var TRIAL_STEPS = [
-    { id: "incident", text: "An incident! Click the marker to see what happened.", showOn: "tutorialReleased", clearOn: "incidentSelected", anchor: "incident" },
+    { id: "incident", text: "Briefing complete - the clock is running. An incident! Click its marker to see what happened.", showOn: "tutorialReleased", clearOn: "incidentSelected", anchor: "incident" },
     { id: "send", text: "Pick the crew marked Best, then press Send.", clearOn: "crewSent", anchor: "send" },
     { id: "drive", text: "The crew drives on roads — wait for it to arrive.", clearOn: "crewArrived", anchor: "crew" },
     { id: "repair", text: "Repairing… keep the city condition up!", clearOn: "repairDone", anchor: "meter" },

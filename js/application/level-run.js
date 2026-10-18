@@ -1,4 +1,4 @@
-// Application: runs a level inside the screen flow — starts a Round on Play and Retry, drops it
+// Application: prepares a level, then runs its timed round inside the screen flow — starts a Round on Play and Retry, drops it
 // on Main menu, only advances it while playing, ends on the result screen, and drives the
 // tutorial hints (feature 005 research R7). Feature 006: choosing the crew — the panel's
 // picked crew, and crew-first sending with an armed crew (research R4, R5).
@@ -15,6 +15,8 @@
     this.map = opts.map;
     this.level = opts.level;
     this.round = null;
+    this.briefing = null;
+    this.referenceSection = null;
     this.hints = null;
     this.hintsSkipped = false;
     this.selected = null;
@@ -33,11 +35,34 @@
   P.off = function (evt, fn) { this._events.off(evt, fn); };
 
   P._onScreenChange = function (e) {
-    if (e.to === "playing" && (e.from === "menu" || e.action === "retry")) this._start();
+    if (e.to !== "playing") this.closeReference();
+    if (e.to === "briefing-crews" && e.from !== "briefing-problems") {
+      var skipped = this.hintsSkipped;
+      this._stop();
+      if (e.action === "retry") this.hintsSkipped = skipped;
+      this.briefing = MCW.buildRoundBriefing(this.level, this.map);
+      this._events.emit("prepare", this.briefing);
+    } else if (e.to === "playing" && (e.from === "menu" || e.action === "retry" || e.action === "startRound")) this._start();
     else if (e.to === "menu") this._stop();
   };
 
+  P.openReference = function (section) {
+    if ((section !== "crews" && section !== "problems") || this.screens.state !== "playing" || !this.round || this.round.over) return false;
+    if (this.referenceSection === section) return true;
+    this.referenceSection = section;
+    this._events.emit("reference", section);
+    return true;
+  };
+
+  P.closeReference = function () {
+    if (this.referenceSection === null) return;
+    this.referenceSection = null;
+    this._events.emit("reference", null);
+  };
+
   P._start = function () {
+    this.closeReference();
+    if (!this.briefing) this.briefing = MCW.buildRoundBriefing(this.level, this.map);
     var self = this;
     if (this.round) this.round.reset();
     var round = (this.round = new MCW.Round({ map: this.map, level: this.level }));
@@ -55,6 +80,7 @@
   };
 
   P._stop = function () {
+    this.briefing = null;
     if (this.round) this.round.reset();
     this.round = null;
     this.hints = null;
@@ -63,6 +89,7 @@
     this.pickedCrew = null;
     this.armedCrew = null;
     this.options = [];
+    this._optionsMs = 0;
   };
 
   P._onRoundEvent = function (round, evt, p) {

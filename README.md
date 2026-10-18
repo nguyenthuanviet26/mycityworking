@@ -14,7 +14,11 @@ Open `index.html` in a current Chrome, Edge or Firefox (double-click works), or 
 folder from any static host. The game opens on the main menu; press **Play**. Press **Esc**
 (or the pause button, top right) to pause.
 
-**Play** starts the **trial level** (feature 005): a four-minute storm on a small city in three
+**Play** opens an untimed round briefing (feature 008): review your four crews, including leaders, vehicles, travel speeds in tiles/second, repair times, compatibility, and advantages; then inspect all 18 scheduled problems, locations, warning times, and suitable crews. Choose **Start Round** when ready. The briefing does not activate future problems.
+
+During the round, **Crew stats** (`R`) and **Problem schedule** (`O`) open a read-only reference while **time keeps running**. Close it with Esc or its Close button; choose Pause to stop the clock. Retry, available from Pause and the result screen, returns to preparation.
+
+**Start Round** starts the **trial level** (feature 005): a four-minute storm on a small city in three
 phases — *Drizzle*, *Downpour*, *Peak storm*. Roads crack, roofs get damaged, streetlights fall
 and the pump station fails. You have four crews (feature 006): **Road Crew**, **Builders**,
 **Electricians** and **Drainage Team**, each in its own vehicle with a named leader. Each crew is
@@ -42,7 +46,8 @@ than the trial city opens in free look, with no level), `?zoom=0.5`, `?center=10
 | `1`–`4` | Pick that crew in the open incident panel, or arm it for crew-first sending |
 | Click a crew card, then an incident | Send that crew (incidents it can't fix are dimmed) |
 | `Enter` / `Space` | Send (or redirect) the picked crew to the open incident |
-| `Tab` | Next incident (urgent first) |
+| `Tab` | Next incident (urgent first) when selected; otherwise navigate controls |
+| `R` / `O` | Crew stats / full problem schedule; time keeps running |
 | `C` | Find the picked or armed crew (when developer mode is off); double-click a crew card or press ⌖ for any crew |
 | `?` (crew bar) | Pause and open How to Play with the Crew guide |
 | `Esc` | Close the incident panel or cancel an armed crew; pause / resume; back out of menu panels |

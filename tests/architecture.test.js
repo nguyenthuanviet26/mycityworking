@@ -4,8 +4,8 @@
 describe("architecture", function () {
   var LAYERS = {
     domain: ["iso", "terrain", "collision", "objectTypes", "GameMap", "parseMap", "mapChecks", "serializeMap", "createEmitter", "findRoute", "workTiles", "incidentKinds", "checkLevel", "jobs", "matchLevel", "repairSeconds", "repairPoints", "kindAccepts", "levelCrews"],
-    application: ["Camera", "ScreenMachine", "attract", "rain", "GameSession", "palette", "EditHistory", "EditorSession", "Crew", "Round", "Hints", "LevelRun"],
-    adapters: ["objectArt", "jobArt", "CrewGuide", "terrainArt", "TerrainArt", "Renderer", "DebugOverlay", "RainLayer", "Input", "MenuUI", "EditorOverlay", "EditorUI", "LevelLayer", "HUD"],
+    application: ["Camera", "ScreenMachine", "attract", "rain", "GameSession", "palette", "EditHistory", "EditorSession", "Crew", "Round", "Hints", "LevelRun", "buildRoundBriefing"],
+    adapters: ["objectArt", "jobArt", "CrewGuide", "terrainArt", "TerrainArt", "Renderer", "DebugOverlay", "RainLayer", "Input", "MenuUI", "EditorOverlay", "EditorUI", "LevelLayer", "HUD", "RoundBriefingUI"],
     infrastructure: ["assets", "maps", "levels", "mapFile", "workStore", "fileIO"]
   };
   var BROWSER = ["document", "window", "canvas", "getContext", "Image(", ".png", "setTimeout",
@@ -67,7 +67,7 @@ describe("architecture", function () {
   });
 
   it("the test page loads no drawing, input, UI or infrastructure code", function () {
-    ["Renderer", "DebugOverlay", "RainLayer", "Input", "MenuUI", "EditorOverlay", "EditorUI", "LevelLayer", "HUD", "CrewGuide", "assets", "maps", "levels", "workStore", "fileIO"].forEach(function (n) {
+    ["Renderer", "DebugOverlay", "RainLayer", "Input", "MenuUI", "EditorOverlay", "EditorUI", "LevelLayer", "HUD", "CrewGuide", "RoundBriefingUI", "assets", "maps", "levels", "workStore", "fileIO"].forEach(function (n) {
       assertEqual(MCW[n], undefined, "MCW." + n);
     });
   });
